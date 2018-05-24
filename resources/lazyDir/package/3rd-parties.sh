@@ -4,8 +4,8 @@
 SDIR="$(dirname $0)"
 WDIR="${PWD}"
 
-# Inject common script
-source "${SDIR}/../common.sh"
+# Inject common script from stage dir or parent dir
+source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Prepare folder to store packages
 : ${OUTPUT_PATH:="${1:-"${PWD}/dist/${DIST}"}"}
