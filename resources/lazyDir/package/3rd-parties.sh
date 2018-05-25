@@ -11,8 +11,8 @@ source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 : ${OUTPUT_PATH:="${1:-"${PWD}/dist/${DIST}"}"}
 [ -d "${OUTPUT_PATH}" ] || mkdir -p "${OUTPUT_PATH}" 
 
-# Get dependency list from argument or python requirements file
-: ${DEPS:="${2:-requirements.txt}"}
+# Get dependency list from argument or Python full requirements file
+: ${DEPS:="${2:-${SDIR}/requirements-full.txt}"}
 
 # Prepare temp folder to build packages 
 TDIR="$(mktemp -p /var/tmp -d fpm.XXXXXXXXXX)"
@@ -72,4 +72,4 @@ function build_from_pypi {
 while read DEP
 do
 	build_from_pypi "${DEP}"
-done < <(cat "${DEPS}")
+done < <(cat "${DEPS}" | grep -Ev '^ *(#|$)' | grep -Eo '[^ ]+')
