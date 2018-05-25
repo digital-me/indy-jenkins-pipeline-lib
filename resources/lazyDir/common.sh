@@ -18,26 +18,31 @@ fi
 
 case "${DIST}" in
 	centos*)
+		SUDO='/usr/bin/sudo'
 		PYTHON='/bin/python3.5'
 		PYTHON_PREFIX="$(rpm -q --whatprovides ${PYTHON} --queryformat '%{name}' 2> /dev/null | cut -d'-' -f1 || echo 'python35u')"
 		PIP='/bin/pip3.5'
 		PKG_EXT='rpm'
-		PKG_MNG='/usr/bin/yum'
+		PKG_MNG="$SUDO /usr/bin/yum"
+		PKG_MNG_CLEAN_CMD='-y clean expire-cache'
 	;;
 	ubuntu*)
+		SUDO='/usr/bin/sudo'
 		PYTHON='/usr/bin/python3.5'
 		PYTHON_PREFIX="$(dpkg-query --search ${PYTHON} 2> /dev/null | cut -d'-' -f1 || echo '')"
 		PIP='/usr/bin/pip3'
 		PKG_EXT='deb'
-		PKG_MNG='/usr/bin/apt-get'
+		PKG_MNG="$SUDO /usr/bin/apt-get"
+		PKG_MNG_CLEAN_CMD='-y update'
 	;;
 	*) # Fall-back, only if called without DIST set
 		[ -x '/usr/bin/which' ] || { echo "Can not found 'which'!"; exit 1; }
+		SUDO="$(which sudo)"
 		PYTHON="$(which python)" 
 		PYTHON_PREFIX='python'
 		PIP="$(which pip)"
 		which rpm &> /dev/null && PKG_EXT='rpm' || PKG_EXT='deb'
-		which yum &> /dev/null && PKG_MNG="$(which yum)" || PKG_MNG="$(which apt-get)"
+		which yum &> /dev/null && PKG_MNG="$SUDO $(which yum)" || PKG_MNG="$SUDO $(which apt-get)"
 	;;
 esac
 
