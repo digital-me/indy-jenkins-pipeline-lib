@@ -16,7 +16,8 @@ case "${DIST}" in
 		/usr/bin/createrepo --pretty --compress-type=gz .
 	;;
 	debian*|ubuntu*)
-		/usr/bin/dpkg-scanpackages --multiversion . /dev/null | $GZIP -9c > Packages.gz
+		mkdir -p binary && mv *.deb binary
+		/usr/bin/dpkg-scanpackages --multiversion binary /dev/null | $GZIP -9c > binary/Packages.gz
 	;;
 esac
 
