@@ -1,14 +1,11 @@
 #!/bin/bash -e
 
-# Get the script and work dir
+# Get the relative dir to this script and source common bloc
 SDIR="$(dirname $0)"
-WDIR="${PWD}"
-
-# Inject common script from stage dir or parent dir
 source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Prepare folder to store packages
-: ${OUTPUT_PATH:="${1:-"${PWD}/dist/${DIST}"}"}
+: ${OUTPUT_PATH:="${1:-"${PWD}/${BUILD_DIR}/${DIST}"}"}
 [ -d "${OUTPUT_PATH}" ] || mkdir -p "${OUTPUT_PATH}" 
 
 # Get dependency list from argument or Python full requirements file
