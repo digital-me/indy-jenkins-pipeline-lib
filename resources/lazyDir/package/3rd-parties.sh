@@ -42,8 +42,8 @@ function build_from_pypi {
 	# Enter temp folder
 	pushd "${TDIR}"
 
-	sed -i 's/{package_name}/python3-'${PACKAGE_NAME}'/' "${POSTINST_TMP}"
-	sed -i 's/{package_name}/python3-'${PACKAGE_NAME}'/' "${PREREM_TMP}"
+	$SED -i 's/{package_name}/python3-'${PACKAGE_NAME}'/' "${POSTINST_TMP}"
+	$SED -i 's/{package_name}/python3-'${PACKAGE_NAME}'/' "${PREREM_TMP}"
 
 	fpm --input-type 'python' \
 		--output-type "${PKG_EXT}" \
@@ -69,4 +69,4 @@ function build_from_pypi {
 while read DEP
 do
 	build_from_pypi "${DEP}"
-done < <(cat "${DEPS}" | grep -Ev '^ *(#|$)' | grep -Eo '[^ ]+')
+done < <($CAT "${DEPS}" | $GREP -Ev '^ *(#|$)' | $GREP -Eo '[^ ]+')

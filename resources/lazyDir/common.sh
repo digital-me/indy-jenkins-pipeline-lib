@@ -13,21 +13,23 @@ if [ -n "${DRYRUN}" -a "${DRYRUN}" != '0' -a "${DRYRUN}" != 'false' ]; then
 	DRY_ARG='-n'
 fi
 
-# Some general useful commands and variables
-GREP='/bin/grep'
-GZIP='/bin/gzip'
-: ${RSYNC_OPTIONS:="-hal --stats --exclude=\"lost+found\""}
-RSYNC="/usr/bin/rsync ${RSYNC_OPTIONS}"
-SUDO='/usr/bin/sudo'
+# Some general useful commands
+CAT='/bin/cat'				&& test -x $CAT
+CUT='/usr/bin/cut'		&& test -x $CUT
+GREP='/bin/grep'			&& test -x $GREP
+GZIP='/bin/gzip'			&& test -x $GZIP
+SED='/bin/sed'				&& test -x $SED
+SUDO='/usr/bin/sudo'	&& test -x $SUDO
+TR='/usr/bin/tr'				&& test -x $TR
 
 # Figure out the distro name if not supplied
 if [ -z "${DIST}" ]; then
 	if [ -x /usr/bin/lsb_release ]; then
-		DIST_ID="$(lsb_release -is | tr [:upper:] [:lower:])"
-		DIST_RN="$(lsb_release -rs | cut -d'.' -f1)"
+		DIST_ID="$(lsb_release -is | $TR [:upper:] [:lower:])"
+		DIST_RN="$(lsb_release -rs | $CUT -d'.' -f1)"
 	elif [ -r /etc/redhat-release ]; then
-		DIST_ID="$(grep -Po "^\w+" /etc/redhat-release | tr [:upper:] [:lower:])"
-		DIST_RN="$(grep -Po "[\d\.]+" /etc/redhat-release | cut -d'.' -f1)"
+		DIST_ID="$($GREP -Po "^\w+" /etc/redhat-release | $TR [:upper:] [:lower:])"
+		DIST_RN="$($GREP -Po "[\d\.]+" /etc/redhat-release | $CUT -d'.' -f1)"
 	fi
 	DIST="${DIST_ID}-${DIST_RN}"
 fi
@@ -37,21 +39,22 @@ fi
 # Some distro specific command
 case "${DIST}" in
 	centos*)
-		PYTHON='/bin/python3.5'
-		PYTHON_PREFIX="$(rpm -q --whatprovides ${PYTHON} --queryformat '%{name}' 2> /dev/null | cut -d'-' -f1 || echo 'python35u')"
-		PIP='/bin/pip3.5'
-		YUM="/usr/bin/yum"
+		RPM='/bin/rpm'			&& test -x $RPM
+		YUM='/usr/bin/yum'		&& test -x $YUM
 		PKG_EXT='rpm'
 		PKG_MNG="$SUDO $YUM"
+		PYTHON='/bin/python3.5'
+		PYTHON_PREFIX="$($RPM -q --whatprovides ${PYTHON} --queryformat '%{name}' 2> /dev/null | $CUT -d'-' -f1 || echo 'python35u')"
+		PIP='/bin/pip3.5'
 	;;
 	debian*|ubuntu*)
-		SUDO='/usr/bin/sudo'
-		PYTHON='/usr/bin/python3.5'
-		PYTHON_PREFIX="$(dpkg-query --search ${PYTHON} 2> /dev/null | cut -d'-' -f1 || echo '')"
-		PIP='/usr/bin/pip3'
-		APT="/usr/bin/apt"
+		DPKG='/usr/bin/dpkg'	&& test -x $DPKG
+		APT='/usr/bin/apt'		&& test -x $APT
 		PKG_EXT='deb'
 		PKG_MNG="$SUDO $APT-get"
+		PYTHON='/usr/bin/python3.5'
+		PYTHON_PREFIX="$($DPKG-query --search ${PYTHON} 2> /dev/null | $CUT -d'-' -f1 || echo '')"
+		PIP='/usr/bin/pip3'
 	;;
 	*)
 		echo "Unknown distribution (= ${DIST})"
