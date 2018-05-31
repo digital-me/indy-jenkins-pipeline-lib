@@ -7,17 +7,20 @@ source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 # Default variables
 : ${BUILD_DIR:='dist'}
 : ${DIST_DIR:=${WORKSPACE}/${BUILD_DIR}/${DIST}}
+: ${REPO_BRANCH:='master'}
 
 # Enter the directory where the packages should be
 pushd "${DIST_DIR}"
 
+# Move unarchived packages to the relevant sub dir
 case "${DIST}" in
 	centos*)
-		/usr/bin/createrepo --pretty --compress-type=gz .
+		mv -f *.rpm ${REPO_BRANCH}
+		/usr/bin/createrepo --pretty --compress-type=gz ${REPO_BRANCH}
 	;;
 	debian*|ubuntu*)
-		mkdir -p binary && mv *.deb binary
-		/usr/bin/dpkg-scanpackages --multiversion binary /dev/null | $GZIP -9c > binary/Packages.gz
+		mv -f *.deb ${REPO_BRANCH}/binary
+		/usr/bin/dpkg-scanpackages --multiversion ${REPO_BRANCH}/binary /dev/null | $GZIP -9c > ${REPO_BRANCH}/binary/Packages.gz
 	;;
 esac
 
