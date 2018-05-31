@@ -41,6 +41,7 @@ case "${DIST}" in
 	centos*)
 		RPM='/bin/rpm'			&& test -x $RPM
 		YUM='/usr/bin/yum'		&& test -x $YUM
+		PKG_ARCH="$(/usr/bin/arch)"
 		PKG_EXT='rpm'
 		PKG_MNG="$SUDO $YUM"
 		PYTHON='/bin/python3.5'
@@ -50,6 +51,7 @@ case "${DIST}" in
 	debian*|ubuntu*)
 		DPKG='/usr/bin/dpkg'	&& test -x $DPKG
 		APT='/usr/bin/apt'		&& test -x $APT
+		PKG_ARCH="$(/usr/bin/arch | $SED -r -e 's/x86_64/amd64/')"
 		PKG_EXT='deb'
 		PKG_MNG="$SUDO $APT-get"
 		PYTHON='/usr/bin/python3.5'

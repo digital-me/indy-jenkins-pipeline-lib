@@ -5,22 +5,24 @@ SDIR="$(dirname $0)"
 source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Default variables
-: ${BUILD_DIR:='dist'}
-: ${DIST_DIR:=${WORKSPACE}/${BUILD_DIR}/${DIST}}
+: ${BUILD_DIR:='target'}
 : ${REPO_BRANCH:='master'}
+: ${DST_DIR:="dists/${DIST}/${REPO_BRANCH}"}
 
 # Enter the directory where the packages should be
-pushd "${DIST_DIR}"
+pushd "${WORKSPACE}/${BUILD_DIR}"
 
 # Move unarchived packages to the relevant sub dir
 case "${DIST}" in
 	centos*)
-		mv -f *.rpm ${REPO_BRANCH}
-		/usr/bin/createrepo --pretty --compress-type=gz ${REPO_BRANCH}
+		test -d "${DST_DIR}" || mkdir -p "${DST_DIR}"
+		mv -f "${DIST}"/*.rpm "${DST_DIR}"
+		/usr/bin/createrepo --pretty --compress-type=gz "${DST_DIR}"
 	;;
 	debian*|ubuntu*)
-		mv -f *.deb ${REPO_BRANCH}/binary
-		/usr/bin/dpkg-scanpackages --multiversion ${REPO_BRANCH}/binary /dev/null | $GZIP -9c > ${REPO_BRANCH}/binary/Packages.gz
+		test -d "${DST_DIR}/binary-${PKG_ARCH}" || mkdir -p "${DST_DIR}/binary-${PKG_ARCH}"
+		mv -f "${DIST}"/*.deb "${DST_DIR}/binary-${PKG_ARCH}"
+		/usr/bin/dpkg-scanpackages --multiversion "${DST_DIR}/binary-${PKG_ARCH}" /dev/null | $GZIP -9c > ${DST_DIR}/binary-${PKG_ARCH}/Packages.gz
 	;;
 esac
 

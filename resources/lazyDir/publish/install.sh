@@ -5,21 +5,18 @@ SDIR="$(dirname $0)"
 source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Default variables
-: ${BUILD_DIR:='dist'}
-: ${DIST_DIR:=${WORKSPACE}/${BUILD_DIR}/${DIST}}
+: ${BUILD_DIR:='target'}
 : ${REPO_BRANCH:='master'}
-
-pwd && ls -lAR ${DIST_DIR}
 
 # Add a local repo and verify the installation with dependencies
 case "${DIST}" in
 	centos*)
-		$SUDO $YUM-config-manager --add-repo "file://${DIST_DIR}/${REPO_BRANCH}"
+		$SUDO $YUM-config-manager --add-repo "file://${WORKSPACE}/${BUILD_DIR}/dists/${DIST}/${REPO_BRANCH}"
 		$SUDO $YUM -y clean expire-cache
 		$SUDO $YUM -y install ${1}
 	;;
 	debian*|ubuntu*)
-		$SUDO $APT-add-repository -y -u "deb file://${WORKSPACE}/${BUILD_DIR}/ ${DIST}/${REPO_BRANCH}/"
+		$SUDO $APT-add-repository -y -u "deb file://${WORKSPACE}/${BUILD_DIR}/ ${DIST} ${REPO_BRANCH}"
 		$SUDO $APT-get -y update
 		$SUDO $APT-get -y install ${1}
 	;;
