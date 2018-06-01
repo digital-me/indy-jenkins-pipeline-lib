@@ -54,7 +54,7 @@ case "${DIST}" in
 		PKG_ARCH="$(/usr/bin/arch | $SED -r -e 's/x86_64/amd64/')"
 		PKG_EXT='deb'
 		PKG_MNG="$SUDO $APT-get"
-		PYTHON='/usr/bin/python3.5'
+		PYTHON='/usr/bin/python3'
 		PYTHON_PREFIX="$($DPKG-query --search ${PYTHON} 2> /dev/null | $CUT -d'-' -f1 || echo '')"
 		PIP='/usr/bin/pip3'
 	;;
