@@ -5,7 +5,6 @@ SDIR="$(dirname $0)"
 source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Default variables
-: ${BUILD_DIR:='target'}
 : ${REPO_BRANCH:='master'}
 : ${DST_DIR:="dists/${DIST}/${REPO_BRANCH}"}
 

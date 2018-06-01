@@ -5,7 +5,6 @@ SDIR="$(dirname $0)"
 source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 
 # Default variables
-: ${BUILD_DIR:='target'}
 : ${REPO_BRANCH:='master'}
 
 # Add a local repo and verify the installation with dependencies
@@ -18,6 +17,6 @@ case "${DIST}" in
 	debian*|ubuntu*)
 		$SUDO $APT-add-repository -y -u "deb file://${WORKSPACE}/${BUILD_DIR}/ ${DIST} ${REPO_BRANCH}"
 		$SUDO $APT-get -y update
-		$SUDO $APT-get -y install ${1}
+		$SUDO $APT-get -y --allow-unauthenticated install ${1}
 	;;
 esac

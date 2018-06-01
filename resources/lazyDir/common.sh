@@ -6,6 +6,7 @@ set -o pipefail
 # Define some default value, in case the environment is not set (by Jenkins for instance)
 : ${DIST:="${LAZY_LABEL}"}
 : ${WORKSPACE:="${PWD}"}
+: ${BUILD_DIR:='target'}
 
 # Set some dry-run options/arguments
 if [ -n "${DRYRUN}" -a "${DRYRUN}" != '0' -a "${DRYRUN}" != 'false' ]; then
