@@ -18,6 +18,6 @@ case "${DIST}" in
 		$SUDO $SED -r -e "s;^deb\s+${REPO_BASEURL}.+\$;deb file://${WORKSPACE}/${BUILD_DIR}/ ${DIST} ${REPO_BRANCH};" \
 			-i /etc/apt/sources.list.d/indy.list
 		$SUDO $APT-get -y update
-		$SUDO $APT-get -y --allow-unauthenticated install ${1}
+		$SUDO DEBIAN_FRONTEND=noninteractive $APT-get -y --allow-unauthenticated install ${1}
 	;;
 esac
