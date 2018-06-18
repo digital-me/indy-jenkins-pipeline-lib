@@ -20,7 +20,6 @@ CUT='/usr/bin/cut'		&& test -x $CUT
 GREP='/bin/grep'			&& test -x $GREP
 GZIP='/bin/gzip'			&& test -x $GZIP
 SED='/bin/sed'				&& test -x $SED
-SUDO='/usr/bin/sudo'	&& test -x $SUDO
 TR='/usr/bin/tr'				&& test -x $TR
 
 # Figure out the distro name if not supplied

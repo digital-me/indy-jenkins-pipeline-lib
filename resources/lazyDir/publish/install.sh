@@ -7,6 +7,9 @@ source "${SDIR}/common.sh" || source "${SDIR}/../common.sh"
 # Default variables
 : ${REPO_BRANCH:='master'}
 
+# Some required commands
+SUDO='/usr/bin/sudo'	&& test -x $SUDO
+
 # Add a local repo and verify the installation with dependencies
 case "${DIST}" in
 	centos*)
